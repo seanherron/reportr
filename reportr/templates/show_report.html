@@ -1,0 +1,218 @@
+{% extends "layout.html" %}
+{% block body %}
+{% if report %}
+<div class="safetyreport">
+	<div class="row">
+		<h2>{% if report.safetyreportid %}{{ report.safetyreportid }}{% else %}Unknown{% endif %} <small>{% if report.fulfillexpeditecriteria == '1' %}Expedited [15-Day]{% elif report.fulfillexpeditecriteria == '2' %}Direct{% endif %}</small></h2>
+	</div>
+	
+	<div class="row">
+		<h3>General Information</h3>
+		<div class="small-12 columns panel">
+			<div class="row">
+				<div class="medium-3 columns">
+					<div class="key">
+						Company Number
+					</div>
+					<div class="value">
+						{% if report.companynumb %}{{ report.companynumb }}{% else %}Unknown{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Transmission Date
+					</div>
+					<div class="value">
+						{% if report.transmissiondate %}{{ report.transmissiondate|strftime }}{% else %}Unknown{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Received Date
+					</div>
+					<div class="value">
+						{% if report.receivedate %}{{ report.receivedate|strftime }}{% else %}Unknown{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Sender Qualification
+					</div>
+					<div class="value">
+						{% if report.primarysource.qualification == '1' %}
+							Physician
+						{% elif report.primarysource.qualification == '2' %}
+							Pharmacist
+						{% elif report.primarysource.qualification == '3' %}
+							Other Health Professional
+						{% elif report.primarysource.qualification == '4' %}
+							Lawyer
+						{% elif report.primarysource.qualification == '5' %}
+							Consumer or Non-Health Professional
+						{% endif %}							
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<h3>Patient Information</h3>
+		<div class="small-12 columns panel">
+			<div class="row">
+				<div class="medium-3 columns">
+					<div class="key">
+						Age
+					</div>
+					<div class="value">
+						{% if report.patient.patientonsetage %}{{ report.patient.patientonsetage }} {{ report.patient.patientonsetageunit|time_unit_convert }}{% if report.patient.patientonsetage and report.patient.patientonsetage != "1" %}s{% endif %}{% else %}Unknown{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Weight
+					</div>
+					<div class="value">
+						{% if report.patient.patientweight %}{{ report.patient.patientweight }} kg{% else %}Unknown{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Sex
+					</div>
+					<div class="value">
+						{% if report.patient.patientsex == "1 " %}
+							Male
+						{% elif report.patient.patientsex == "2" %}
+							Female
+						{% else %}
+							Unknown						
+						{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Country
+					</div>
+					<div class="value">
+						{% if report.primarysource.reportercountry %}{{ report.primarysource.reportercountry|title }}{% else %}Unknown{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="medium-3 columns">
+					<div class="key">
+						Reaction{% for reaction in report.patient.reaction %}{% if loop.first and loop.length > 1 %}s{% endif %}{% endfor %}
+					</div>
+					<div class="value">
+						{% for reaction in report.patient.reaction %}
+							{% if reaction.reactionmeddrapt %}{{ reaction.reactionmeddrapt|title }}{% else %}Unknown{% endif %}<br>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="medium-9 columns">
+					<div class="key">
+						Outcomes
+					</div>
+					<div class="value">
+						{% if report.seriousnessdeath == '1' %}
+							Death<br>
+						{% endif %}
+						{% if report.seriousnesslifethreatening == '1' %}
+							Life Threatening<br>
+						{% endif %}
+						{% if report.seriousnesshospitalization == '1' %}
+							Hospitalization<br>
+						{% endif %}
+						{% if report.seriousnessdisabling == '1' %}
+							Disabling<br>
+						{% endif %}
+						{% if report.seriousnesscongenitalanomaly== '1' %}
+							Congenital Anomaly<br>
+						{% endif %}
+						{% if report.seriousnessother== '1' %}
+							Other
+						{% else %}
+							Unknown
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="row">
+		<h3>Medicinal Product(s) Information</h3>
+		<div class="small-12 columns">
+			{% for drug in report.patient.drug %}
+			<div class="row panel drug">
+				<div class="topbar {% if drug.drugcharacterization == "1" %}suspect{% elif drug.drugcharacterization == "2" %}concomitant{% elif drug.drugcharacterization == "3" %}interacting{% endif %}">
+					<h4>{% if drug.medicinalproduct %}{{ drug.medicinalproduct|title }}{% else %}Unknown{% endif %}<span class="characterization">{% if drug.drugcharacterization == "1" %}Suspect{% elif drug.drugcharacterization == "2" %}Concomitant{% elif drug.drugcharacterization == "3" %}Interacting{% endif %}</span></h4>
+				</div>
+				<div class="small-12 columns">
+					<div class="row">
+						<div class="medium-3 columns">
+							<div class="key">
+								NDA
+							</div>
+							<div class="value">
+								{% if drug.drugauthorizationnumb %}{{ drug.drugauthorizationnumb }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+						<div class="medium-3 columns">
+							<div class="key">
+								Lot Number
+							</div>
+							<div class="value">
+								{% if drug.drugbatchnumb and drug.drugbatchnumb != "UNK" %}{{ drug.drugbatchnumb }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+						<div class="medium-3 columns">
+							<div class="key">
+								Start Date
+							</div>
+							<div class="value">
+								{% if drug.drugstartdate %}{{ drug.drugstartdate|strftime }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+						<div class="medium-3 columns">
+							<div class="key">
+								End Date
+							</div>
+							<div class="value">
+								{% if drug.drugenddate %}{{ drug.drugenddate|strftime }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="medium-3 columns">
+							<div class="key">
+								Administration Route
+							</div>
+							<div class="value">
+								{{ drug.drugadministrationroute|administration_route_convert }}
+							</div>
+						</div>
+						<div class="medium-9 columns">
+							<div class="key">
+								Dosage
+							</div>
+							<div class="value">
+								{% if drug.drugdosagetext %}{{ drug.drugdosagetext|title }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% else %}
+	<div class="row">
+		<div class="small-12 columns">
+			<p>Unbelievable.  No entries here so far.</p>
+		</div>
+{% endif %}
+{% endblock %}

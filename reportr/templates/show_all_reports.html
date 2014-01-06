@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="row panel callout">
+<p>Showing Results {{ starting_number }} to {{ ending_number }} of {{ count }}</p>
+</div>
+<div class="reports reports-{{ starting_number }}-to-{{ ending_number }}">
+{% for report in reports %}
+	<div class="panel row safetyreport list">
+		<div class="small-12 columns">
+			<h2><a href="/safetyreport/{{ report._source.safetyreportid }}">{% if report._source.safetyreportid %}{{ report._source.safetyreportid }}{% else %}Unknown{% endif %}</a> <small>{% if report._source.fulfillexpeditecriteria == '1' %}Expedited [15-Day]{% elif report._source.fulfillexpeditecriteria == '2' %}Direct{% endif %}</small></h2>
+			<hr>
+			<div class="row">
+			<div class="medium-3 columns">
+				<div class="key">
+					Received Date
+				</div>
+				<div class="value">
+					{% if report._source.receivedate %}{{ report._source.receivedate|strftime }}{% else %}Unknown{% endif %}
+				</div>
+			</div>
+			<div class="medium-3 columns">
+				<div class="key">
+					Patient Age
+				</div>
+				<div class="value">
+					{% if report._source.patient.patientonsetage %}{{ report._source.patient.patientonsetage }} {{ report._source.patient.patientonsetageunit|time_unit_convert }}{% if report._source.patient.patientonsetage and report._source.patient.patientonsetage != "1" %}s{% endif %}{% else %}Unknown{% endif %}
+				</div>
+			</div>
+			<div class="medium-3 columns">
+				<div class="key">
+					Patient Sex
+				</div>
+				<div class="value">
+					{% if report._source.patient.patientsex == "1 " %}
+						Male
+					{% elif report._source.patient.patientsex == "2" %}
+						Female
+					{% else %}
+						Unknown						
+					{% endif %}
+				</div>
+			</div>
+			<div class="medium-3 columns">
+				<div class="key">
+					Patient Weight
+				</div>
+				<div class="value">
+					{% if report._source.patient.patientweight %}{{ report._source.patient.patientweight }} kg{% else %}Unknown{% endif %}
+				</div>
+			</div>
+		</div>
+			<div class="row">
+			<div class="medium-6 columns">
+				<div class="key">
+					Medicinal Products
+				</div>
+				<div class="value">
+					{% if report._source.patient.drug %}
+						{% for drug in report._source.patient.drug %}
+							{{ drug.medicinalproduct|title }}{% if drug.drugdosagetext %} ({{ drug.drugdosagetext|title }}){% endif %}<br>
+						{% endfor %}
+					{% else %}
+						Unknown
+					{% endif %}
+				</div>
+			</div>
+			<div class="medium-3 columns">
+				<div class="key">
+					Reactions
+				</div>
+				<div class="value">
+					{% if report._source.patient.reaction %}
+						{% for reaction in report._source.patient.reaction %}
+							{{ reaction.reactionmeddrapt|title }}<br>
+						{% endfor %}
+					{% else %}
+						Unknown
+					{% endif %}
+				</div>
+			</div>
+			<div class="medium-3 columns">
+				<div class="key">
+					Outcomes
+				</div>
+				<div class="value">
+					{% if report._source.seriousnessdeath == '1' %}
+						Death<br>
+					{% endif %}
+					{% if report._source.seriousnesslifethreatening == '1' %}
+						Life Threatening<br>
+					{% endif %}
+					{% if report._source.seriousnesshospitalization == '1' %}
+						Hospitalization<br>
+					{% endif %}
+					{% if report._source.seriousnessdisabling == '1' %}
+						Disabling<br>
+					{% endif %}
+					{% if report._source.seriousnesscongenitalanomaly== '1' %}
+						Congenital Anomaly<br>
+					{% endif %}
+					{% if report._source.seriousnessother== '1' %}
+						Other
+					{% else %}
+						Unknown
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		</div>	
+	</div>
+{% endfor %}
+<div class="pagination-centered">
+  <ul class="pagination">
+    {% if not first_page %}<li class="arrow"><a href="/{{ previous_page }}">&laquo; Previous {{ per_page }} Results</a></li>{% endif %}
+    <li class="unavailable"><a href="">Results {{ starting_number}} to {{ ending_number }}</a></li>
+	<li class="arrow"><a href="/{{ next_page}}">Next {{ per_page }} Results &raquo;</a></li>
+  </ul>
+</div>
+{% endblock %}
