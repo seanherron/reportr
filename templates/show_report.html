@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block body %}
+{% if report %}
+	<div class="row">
+		<div class="small-12 columns safetyreport">
+			<h2><a href="#">{{ report.safetyreportid }}</a></h2>
+			<h3>Report Details</h3>
+			<div class="value">
+					<span class="key">Transmission Date:</span> {% if report.transmissiondate %}{{ report.transmissiondate }}{% else %}Unknown{% endif %}
+			</div>
+			<div class="value">
+					<span class="key">Received Date:</span> {% if report.receivedate %}{{ report.receivedate }}{% else %}Unknown{% endif %}
+			</div>
+
+				<div class="value">
+					<span class="key">Patient Weight:</span> {% if report.patient.patientweight %}{{ report.patient.patientweight }}{% else %}Unknown{% endif %}
+				</div>
+
+				<div class="value">
+					<span class="key">Patient Sex:</span> {% if report.patient.patientsex == "1" %}Male{% elif report.patient.patientsex == "2" %}Female{% else %}Unknown{% endif %}
+				</div>
+			
+		</div>
+	</div>
+{% else %}
+	<div class="row">
+		<div class="small-12 columns">
+			<p>Unbelievable.  No entries here so far.</p>
+		</div>
+{% endif %}
+{% endblock %}
