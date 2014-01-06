@@ -3,9 +3,15 @@ Jinja2==2.7.1
 MarkupSafe==0.18
 Werkzeug==0.9.4
 argparse==1.2.1
+distribute==0.6.49
 itsdangerous==0.23
 pyelasticsearch==0.6.1
+python-dateutil==2.2
 requests==2.1.0
 simplejson==3.3.1
 six==1.4.1
+stevedore==0.10
+virtualenv==1.9.1
+virtualenv-clone==0.2.4
+virtualenvwrapper==4.0
 wsgiref==0.1.2
