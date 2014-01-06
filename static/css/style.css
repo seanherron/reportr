@@ -1,3 +1,42 @@
 div.content {
-	margin-top:20px;
-}
+  margin-top: 20px;
+  margin-bottom: 50px; }
+
+div.panel.drug {
+  position: relative;
+  margin-top: 20px;
+  padding-top: 80px; }
+
+div.topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 55px;
+  line-height: 50px;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px; }
+  div.topbar h4 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    font-weight: 400; }
+    div.topbar h4 span.characterization {
+      display: block;
+      font-size: 0.6em;
+      color: #4d4d4d;
+      font-weight: 300; }
+  div.topbar.suspect {
+    background-color: #B3DDED; }
+  div.topbar.concomitant {
+    background-color: #A1839F; }
+  div.topbar.interacting {
+    background-color: #045D6D; }
+
+.safetyreport .key {
+  font-weight: 400;
+  margin-bottom: 2.5px; }
+.safetyreport .value {
+  min-height: 25px;
+  font-weight: 300;
+  margin-bottom: 10px; }

@@ -1,0 +1,273 @@
+{% extends "layout.html" %}
+{% block body %}
+{% if report %}
+<div class="safetyreport">
+	<div class="row">
+		<h2>{% if report.safetyreportid %}{{ report.safetyreportid }}{% else %}Unknown{% endif %} <small>{% if report.fulfillexpeditecriteria == '1' %}Expedited [15-Day]{% elif report.fulfillexpeditecriteria == '2' %}Direct{% endif %}</small></h2>
+	</div>
+	
+	<div class="row">
+		<h3>General Information</h3>
+		<div class="small-12 columns panel">
+			<div class="row">
+				<div class="medium-3 columns">
+					<div class="key">
+						Company Number
+					</div>
+					<div class="value">
+						{% if report.companynumb %}{{ report.companynumb }}{% else %}Unknown{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Transmission Date
+					</div>
+					<div class="value">
+						{% if report.transmissiondate %}{{ report.transmissiondate|strftime }}{% else %}Unknown{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Received Date
+					</div>
+					<div class="value">
+						{% if report.receivedate %}{{ report.receivedate }}{% else %}Unknown{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Sender Qualification
+					</div>
+					<div class="value">
+						{% if report.primarysource.qualification == '1' %}
+							Physician
+						{% elif report.primarysource.qualification == '2' %}
+							Pharmacist
+						{% elif report.primarysource.qualification == '3' %}
+							Other Health Professional
+						{% elif report.primarysource.qualification == '4' %}
+							Lawyer
+						{% elif report.primarysource.qualification == '5' %}
+							Consumer or Non-Health Professional
+						{% endif %}							
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<h3>Patient Information</h3>
+		<div class="small-12 columns panel">
+			<div class="row">
+				<div class="medium-3 columns">
+					<div class="key">
+						Age
+					</div>
+					<div class="value">
+						{% if report.patient.patientonsetage %}{{ report.patient.patientonsetage }}{% else %}Unknown{% endif %} {% if report.patient.patientonsetageunit == "800" %}Decades{% elif report.patient.patientonsetageunit == "801" %}Years{% elif report.patient.patientonsetageunit == "802" %}Months{% elif report.patient.patientonsetageunit == "803" %}Weeks{% elif report.patient.patientonsetageunit == "804" %}Days{% elif report.patient.patientonsetageunit == "805" %}Hours{% endif %}
+					</div>
+				</div>
+				<div class="medium-3 columns">
+					<div class="key">
+						Weight
+					</div>
+					<div class="value">
+						{% if report.patient.patientweight %}{{ report.patient.patientweight }} kg{% else %}Unknown{% endif %}
+					</div>
+				</div>
+				<div class="medium-6 columns">
+					<div class="key">
+						Country
+					</div>
+					<div class="value">
+						{% if report.primarysource.reportercountry %}{{ report.primarysource.reportercountry|title }}{% else %}Unknown{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="medium-3 columns">
+					<div class="key">
+						Reaction{% for reaction in report.patient.reaction %}{% if loop.first and loop.length > 1 %}s{% endif %}{% endfor %}
+					</div>
+					<div class="value">
+						{% for reaction in report.patient.reaction %}
+							{% if reaction.reactionmeddrapt %}{{ reaction.reactionmeddrapt|title }}{% else %}Unknown{% endif %}<br>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="medium-9 columns">
+					<div class="key">
+						Outcome
+					</div>
+					<div class="value">
+						{% if report.seriousnessdeath == '1' %}
+							Death<br>
+						{% endif %}
+						{% if report.seriousnesslifethreatening == '1' %}
+							Life Threatening<br>
+						{% endif %}
+						{% if report.seriousnesshospitalization == '1' %}
+							Hospitalization<br>
+						{% endif %}
+						{% if report.seriousnessdisabling == '1' %}
+							Disabling<br>
+						{% endif %}
+						{% if report.seriousnesscongenitalanomaly== '1' %}
+							Congenital Anomaly<br>
+						{% endif %}
+						{% if report.seriousnessother== '1' %}
+							Other
+						{% else %}
+							Unknown
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="row">
+		<h3>Medicinal Product(s) Information</h3>
+		<div class="small-12 columns">
+			{% for drug in report.patient.drug %}
+			<div class="row panel drug">
+				<div class="topbar {% if drug.drugcharacterization == "1" %}suspect{% elif drug.drugcharacterization == "2" %}concomitant{% elif drug.drugcharacterization == "3" %}interacting{% endif %}">
+					<h4>{% if drug.medicinalproduct %}{{ drug.medicinalproduct|title }}{% else %}Unknown{% endif %}<span class="characterization">{% if drug.drugcharacterization == "1" %}Suspect{% elif drug.drugcharacterization == "2" %}Concomitant{% elif drug.drugcharacterization == "3" %}Interacting{% endif %}</span></h4>
+				</div>
+				<div class="small-12 columns">
+					<div class="row">
+						<div class="medium-3 columns">
+							<div class="key">
+								NDA
+							</div>
+							<div class="value">
+								{% if drug.drugauthorizationnumb %}{{ drug.drugauthorizationnumb }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+						<div class="medium-3 columns">
+							<div class="key">
+								Lot Number
+							</div>
+							<div class="value">
+								{% if drug.drugbatchnumb %}{{ drug.drugbatchnumb }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+						<div class="medium-3 columns">
+							<div class="key">
+								Start Date
+							</div>
+							<div class="value">
+								{% if drug.drugstartdate %}{{ drug.drugstartdate }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+						<div class="medium-3 columns">
+							<div class="key">
+								End Date
+							</div>
+							<div class="value">
+								{% if drug.drugenddate %}{{ drug.drugenddate }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="medium-3 columns">
+							<div class="key">
+								Administration Route
+							</div>
+							<div class="value">
+								{% if drug.drugadministrationroute == "001" %}Auricular (otic)<br>
+								{% elif drug.drugadministrationroute == "002" %}Buccal<br>
+								{% elif drug.drugadministrationroute == "003" %}Cutaneous<br>
+								{% elif drug.drugadministrationroute == "004" %}Dental<br>
+								{% elif drug.drugadministrationroute == "005" %}Endocervical<br>
+								{% elif drug.drugadministrationroute == "006" %}Endosinusial<br>
+								{% elif drug.drugadministrationroute == "007" %}Endotracheal<br>
+								{% elif drug.drugadministrationroute == "008" %}Epidural<br>
+								{% elif drug.drugadministrationroute == "009" %}Extra-amniotic<br>
+								{% elif drug.drugadministrationroute == "010" %}Hemodialysis<br>
+								{% elif drug.drugadministrationroute == "011" %}Intra corpus cavernosum<br>
+								{% elif drug.drugadministrationroute == "012" %}Intra-amniotic<br>
+								{% elif drug.drugadministrationroute == "013" %}Intra-arterial<br>
+								{% elif drug.drugadministrationroute == "014" %}Intra-articular<br>
+								{% elif drug.drugadministrationroute == "015" %}Intra-uterine<br>
+								{% elif drug.drugadministrationroute == "016" %}Intracardiac<br>
+								{% elif drug.drugadministrationroute == "017" %}Intracavernous<br>
+								{% elif drug.drugadministrationroute == "018" %}Intracerebral<br>
+								{% elif drug.drugadministrationroute == "019" %}Intracervical<br>
+								{% elif drug.drugadministrationroute == "020" %}Intracisternal<br>
+								{% elif drug.drugadministrationroute == "021" %}Intracorneal<br>
+								{% elif drug.drugadministrationroute == "022" %}Intracoronary<br>
+								{% elif drug.drugadministrationroute == "023" %}Intradermal<br>
+								{% elif drug.drugadministrationroute == "024" %}Intradiscal (intraspinal)<br>
+								{% elif drug.drugadministrationroute == "025" %}Intrahepatic<br>
+								{% elif drug.drugadministrationroute == "026" %}Intralesional<br>
+								{% elif drug.drugadministrationroute == "027" %}Intralymphatic<br>
+								{% elif drug.drugadministrationroute == "028" %}Intramedullar (bone marrow)<br>
+								{% elif drug.drugadministrationroute == "029" %}Intrameningeal<br>
+								{% elif drug.drugadministrationroute == "030" %}Intramuscular<br>
+								{% elif drug.drugadministrationroute == "031" %}Intraocular<br>
+								{% elif drug.drugadministrationroute == "032" %}Intrapericardial<br>
+								{% elif drug.drugadministrationroute == "033" %}Intraperitoneal<br>
+								{% elif drug.drugadministrationroute == "034" %}Intrapleural<br>
+								{% elif drug.drugadministrationroute == "035" %}Intrasynovial<br>
+								{% elif drug.drugadministrationroute == "036" %}Intratumor<br>
+								{% elif drug.drugadministrationroute == "037" %}Intrathecal<br>
+								{% elif drug.drugadministrationroute == "038" %}Intrathoracic<br>
+								{% elif drug.drugadministrationroute == "039" %}Intratracheal<br>
+								{% elif drug.drugadministrationroute == "040" %}Intravenous bolus<br>
+								{% elif drug.drugadministrationroute == "041" %}Intravenous drip<br>
+								{% elif drug.drugadministrationroute == "042" %}Intravenous (not otherwise specified)<br>
+								{% elif drug.drugadministrationroute == "043" %}Intravesical<br>
+								{% elif drug.drugadministrationroute == "044" %}Iontophoresis<br>
+								{% elif drug.drugadministrationroute == "045" %}Nasal<br>
+								{% elif drug.drugadministrationroute == "046" %}Occlusive dressing technique<br>
+								{% elif drug.drugadministrationroute == "047" %}Ophthalmic<br>
+								{% elif drug.drugadministrationroute == "048" %}Oral<br>
+								{% elif drug.drugadministrationroute == "049" %}Oropharingeal<br>
+								{% elif drug.drugadministrationroute == "050" %}Other<br>
+								{% elif drug.drugadministrationroute == "051" %}Parenteral<br>
+								{% elif drug.drugadministrationroute == "052" %}Periarticular<br>
+								{% elif drug.drugadministrationroute == "053" %}Perineural<br>
+								{% elif drug.drugadministrationroute == "054" %}Rectal<br>
+								{% elif drug.drugadministrationroute == "055" %}Respiratory (inhalation)<br>
+								{% elif drug.drugadministrationroute == "056" %}Retrobulbar<br>
+								{% elif drug.drugadministrationroute == "057" %}Sunconjunctival<br>
+								{% elif drug.drugadministrationroute == "058" %}Subcutaneous<br>
+								{% elif drug.drugadministrationroute == "059" %}Subdermal<br>
+								{% elif drug.drugadministrationroute == "060" %}Sublingual<br>
+								{% elif drug.drugadministrationroute == "061" %}Topical<br>
+								{% elif drug.drugadministrationroute == "062" %}Transdermal<br>
+								{% elif drug.drugadministrationroute == "063" %}Transmammary<br>
+								{% elif drug.drugadministrationroute == "064" %}Transplacental<br>
+								{% elif drug.drugadministrationroute == "065" %}Unknown<br>
+								{% elif drug.drugadministrationroute == "066" %}Urethral<br>
+								{% elif drug.drugadministrationroute == "067" %}Vaginal
+								{% else %}
+								Unknown
+								{% endif %}
+							</div>
+						</div>
+						<div class="medium-9 columns">
+							<div class="key">
+								Dosage
+							</div>
+							<div class="value">
+								{% if drug.drugdosagetext %}{{ drug.drugdosagetext }}{% else %}Unknown{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% else %}
+	<div class="row">
+		<div class="small-12 columns">
+			<p>Unbelievable.  No entries here so far.</p>
+		</div>
+{% endif %}
+{% endblock %}
