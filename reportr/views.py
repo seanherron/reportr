@@ -1,5 +1,7 @@
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, Response
+
 from urlparse import parse_qs
+import re
 
 from pyelasticsearch import ElasticSearch
 
@@ -55,10 +57,16 @@ def search_results(query, page):
     previous_page = "search/%s/%s" % (query, page - 1)
     
     # Construct a basic query that captures all reports and organizes the start number and returned size
-    reports = es.search(query, index=app.config['ES_INDEX'], es_from=search_from, size=app.config['RESULTS_PER_PAGE'])
     
-    # Return the template
-    return render_template('show_all_reports.html', reports=reports["hits"]["hits"], first_page=first_page, starting_number=starting_number, ending_number=ending_number, count=reports["hits"]["total"], per_page=app.config['RESULTS_PER_PAGE'], next_page=next_page, previous_page=previous_page, query=query, page_title=query)
+    # Check to see if it is a safety report request
+    sr_string = re.compile("[0-9][0-9][0-9][0-9][0-9][0-9][0-9]-([0-9]|X)")
+    if sr_string.match(query):
+        return redirect(url_for('show_report', safetyreportid = query))
+    else:
+                
+        reports = es.search(query, index=app.config['ES_INDEX'], es_from=search_from, size=app.config['RESULTS_PER_PAGE'])
+        #Return the template
+        return render_template('show_all_reports.html', reports=reports["hits"]["hits"], first_page=first_page, starting_number=starting_number, ending_number=ending_number, count=reports["hits"]["total"], per_page=app.config['RESULTS_PER_PAGE'], next_page=next_page, previous_page=previous_page, query=query, page_title=query)
     
 
 #
