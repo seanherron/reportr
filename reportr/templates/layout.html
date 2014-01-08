@@ -6,7 +6,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
-	<title>Foundation 5</title>
+	<title>{% if page_title %}{{ page_title }} | {% endif %}FAERS Reporter</title>
 
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/foundation.min.css') }}">
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/normalize.css') }}">
@@ -14,41 +14,41 @@
 
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/foundation.min.css') }}">
 	<script src="{{ url_for('static', filename='js/modernizr.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
 </head>
 
 <body>
-	<nav class="top-bar" data-topbar>
-		<ul class="title-area">
-    		<li class="name">
-    			<h1><a href="/">FAERS Report Generator</a></h1>
-    		</li>
-    		<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-    	</ul>
-
-		<section class="top-bar-section">
-			<!-- Right Nav Section -->
-			<ul class="right">
-      			<li class="active"><a href="#">Right Nav Button Active</a></li>
-      			<li class="has-dropdown">
-      				<a href="#">Right Button with Dropdown</a>
-      				<ul class="dropdown">
-      					<li><a href="#">First link in dropdown</a></li>
-      				</ul>
-      			</li>
-      		</ul>
-    	</section>
-	</nav>
+<nav class="top-bar" data-topbar="">
+	<!-- Title -->
+	<ul class="title-area">
+		<li class="name"><h1><a href="/">FAERS Reporter</a></h1></li>
+	</ul>
+</nav>
 <div class="content">
 	{% for message in get_flashed_messages() %}
 		<div class=flash>{{ message }}</div>
 	{% endfor %}
-
+	
+	<form method="POST" action="/search">
+		<div class="row collapse">
+			<div class="small-10 columns">
+				<input type="text" id="searchBar" placeholder="Search" name="query" {% if query %}value="{{ query }}"{% endif %}>
+			</div>
+			<div class="small-2 columns">
+				<input type="submit" value="Submit" class="button postfix">
+			</div>
+		</div>
+	</form>
+	
 	{% block body %}{% endblock %}
 </div>
 	<script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
 	<script>
 		$(document).foundation();
+	</script>
+	<script>
+		$(document).ready(function() { $("#searchBar").select2(); });
 	</script>
 </body>
 </html>

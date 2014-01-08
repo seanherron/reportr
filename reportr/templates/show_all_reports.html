@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="row panel callout">
-<p>Showing Results {{ starting_number }} to {{ ending_number }} of {{ count }}</p>
+<p>Showing Reports {{ starting_number }} to {{ ending_number }} of {{ count }}</p>
 </div>
 <div class="reports reports-{{ starting_number }}-to-{{ ending_number }}">
 {% for report in reports %}
@@ -113,7 +113,7 @@
   <ul class="pagination">
     {% if not first_page %}<li class="arrow"><a href="/{{ previous_page }}">&laquo; Previous {{ per_page }} Results</a></li>{% endif %}
     <li class="unavailable"><a href="">Results {{ starting_number}} to {{ ending_number }}</a></li>
-	<li class="arrow"><a href="/{{ next_page}}">Next {{ per_page }} Results &raquo;</a></li>
+	<li class="arrow"><a href="/{{ next_page }}">Next {{ per_page }} Results &raquo;</a></li>
   </ul>
 </div>
 {% endblock %}

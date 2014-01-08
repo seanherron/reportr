@@ -6,6 +6,8 @@ div.panel.drug {
   position: relative;
   margin-top: 20px;
   padding-top: 80px; }
+div.panel.callout p {
+  font-weight: 300; }
 
 div.topbar {
   position: absolute;
